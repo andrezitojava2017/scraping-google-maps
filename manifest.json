@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "Captura de Contatos",
+    "version": "1.0",
+    "description": "Caputra de contatos por cidade",
+    "action": {
+      "default_popup": "popup.html"
+    },
+    "permissions": ["tabs", "scripting", "activeTab", "storage"],
+    "host_permissions": ["https://www.google.com.br/*"],
+    "background": {
+      "service_worker": "background.js",
+      "type": "module"
+    }
+  }
