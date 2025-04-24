@@ -13,19 +13,21 @@ const getListCompanies = async () => {
   for (const el of results) {
     try {
       const result = await new Promise((resolve, reject) => {
-        // Sua lógica assíncrona
-        resolve(el.getAttribute("href"));
+        
+        //resolve(el.getAttribute("href"));
+        /**
+         * abrir o link em nova aba
+         * injetar o script scraping.js
+         * 
+         */
       });
+
       url.push(result);
+
     } catch (error) {
       console.error("Falha no elemento:", el, error);
     }
-        /*
-      results.forEach((el) => {
-        //console.log(el.getAttribute("href"));
-        url.push(el.getAttribute("href"))
-      });
-      */
+
   }
 
   // envia lista com todos os links
