@@ -4,12 +4,20 @@
     "version": "1.0",
     "description": "Caputra de contatos por cidade",
     "action": {
-      "default_popup": "popup.html"
+      "default_title": "Abrir Painel"
     },
-    "permissions": ["tabs", "scripting", "activeTab", "storage"],
+    "icons": {   
+    "32": "./icon/icons8-data-32.png",
+    "48": "./icon/icons8-data-42.png"
+  },
+    "permissions": ["tabs", "scripting", "activeTab", "storage","sidePanel"],
     "host_permissions": ["https://www.google.com.br/*"],
     "background": {
       "service_worker": "background.js",
       "type": "module"
-    }
+    },
+    "side_panel": {
+    "default_path": "sidepanel.html"
   }
+  }
+ 

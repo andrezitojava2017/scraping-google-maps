@@ -57,7 +57,7 @@ async function getDataInfos(url) {
         // Injeta content script após a página carregar
         await chrome.scripting.executeScript({
           target: { tabId: tab.id },
-          files: ["scraping.js"],
+          files: ["scraping.js"]
         });
        
         resolve({url:url, tab:tab.id});
@@ -156,12 +156,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.action === "data") {
     dadosColetados.push(request.info);
+
     console.log("salvo em dadosColetados", dadosColetados.length);
-    console.log("lista dadosColetados", dadosColetados);
+    console.log("ferchar tab.id:", sender.tab.id );
+    chrome.tabs.remove(sender.tab.id);   // fecha as abas que ja enviaram os dados
   }
+
+
 });
 
 // background.js
 chrome.tabs.onCreated.addListener((tab) => {
   console.log("Nova aba criada:", tab.url);
 });
+
+chrome.sidePanel
+  .setPanelBehavior({ openPanelOnActionClick: true })
+  .catch((error) => console.error(error));

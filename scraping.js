@@ -23,10 +23,12 @@ function waitForElement(selector, callback) {
 */
 
 async function sendDados(dados){
-    await chrome.runtime.sendMessage({
+   let tabid= await chrome.runtime.sendMessage({
         action: 'data',
         info: dados
       });
+
+    
 }
 
 async function fetchCompanyDetails() {
@@ -64,6 +66,7 @@ setTimeout(async () => {
     let rs = await fetchCompanyDetails()
     await sendDados(rs)
 }, 4000);
+
 
 /*
 // Exemplo: pega nome da empresa
