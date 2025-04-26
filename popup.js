@@ -1,6 +1,6 @@
 // Elementos da UI
-let descricao;
-let cidade;
+let descricao='hotel'
+let cidade='são josé do xingu-mt'
 
 const inputDescricao = document.getElementById("descricao");
 const inputCidade = document.getElementById("cidade");

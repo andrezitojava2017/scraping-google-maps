@@ -1,5 +1,6 @@
 let collectedLinks = [];
 let dadosColetados = [];
+
 /*
 async function getDataInfo(urls) {
 
@@ -71,7 +72,7 @@ async function getDataInfos(url) {
 }
 
 // Ouvinte para mensagens do popup
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   if (request.action === "getList") {
     chrome.tabs.create({ url: request.url }, (tab) => {
       console.log(`Tab criada com ID: ${tab.id}`);
@@ -155,13 +156,28 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 
   if (request.action === "data") {
-    dadosColetados.push(request.info);
+   
+      try {
+        // Adiciona os dados ao array
+        dadosColetados.push(request.info);
 
-    console.log("salvo em dadosColetados", dadosColetados.length);
-    console.log("ferchar tab.id:", sender.tab.id );
-    chrome.tabs.remove(sender.tab.id);   // fecha as abas que ja enviaram os dados
+        // Fecha a aba, se sender.tab.id existir
+        if (sender.tab?.id) {
+          console.log('Fechando aba:', sender.tab.id);
+          await chrome.tabs.remove(sender.tab.id);
+        } else {
+          console.warn('Nenhuma aba associada à mensagem');
+        }
+
+        sendResponse({ success: true });
+      } catch (error) {
+        console.error('Erro no processamento da mensagem:', error);
+        sendResponse({ success: false, error: error.message });
+      }
+   
+    
+    return true;
   }
-
 
 });
 

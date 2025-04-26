@@ -31,7 +31,7 @@ async function sendDados(dados){
     
 }
 
-async function fetchCompanyDetails() {
+ const fetchCompanyDetails=()=> {
    
     return new Promise((resolve) => {
 
@@ -62,17 +62,9 @@ async function fetchCompanyDetails() {
     });
 }
 
+
 setTimeout(async () => {
     let rs = await fetchCompanyDetails()
     await sendDados(rs)
 }, 4000);
-
-
-/*
-// Exemplo: pega nome da empresa
-waitForElement('.DUwDvf.lfPIob', (name) => {
-    console.log("Elemento encontrado:", name);
-    
-});
-*/
 

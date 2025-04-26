@@ -1,3 +1,5 @@
+
+
 // Remove DOMContentLoaded (não necessário para injeção programática)
 console.log("content-script.js carregado!");
 
@@ -14,12 +16,8 @@ const getListCompanies = async () => {
     try {
       const result = await new Promise((resolve, reject) => {
         
-        //resolve(el.getAttribute("href"));
-        /**
-         * abrir o link em nova aba
-         * injetar o script scraping.js
-         * 
-         */
+        resolve(el.getAttribute("href"));
+
       });
 
       url.push(result);
@@ -31,12 +29,14 @@ const getListCompanies = async () => {
   }
 
   // envia lista com todos os links
+
   setTimeout(() => {
     chrome.runtime.sendMessage({
       type: "LOAD_LINK_OF_GET_INFO",
       link: url,
     });
   }, 5000);
+ 
 };
 
 function createbutton(autoscroll) {
@@ -108,12 +108,4 @@ setTimeout(async () => {
 
   await start();
 
-  /*
-  // Exemplo: Verifica se elementos do Maps existem
-  const results = document.querySelectorAll("a.hfpxzc");
-  results.forEach((el) => {
-    console.log(el.getAttribute("href"));
-  });
-*/
-  // Seu código de scraping aqui...
 }, 4000);
