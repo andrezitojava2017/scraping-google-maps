@@ -1,42 +1,62 @@
 let collectedLinks = [];
 let dadosColetados = [];
+// Armazenar os parâmetros de pesquisa
+let parametrosPesquisa = {
+  descricao: '',
+  cidade: ''
+};
 
-/*
-async function getDataInfo(urls) {
+// Função para enviar dados para a API
+async function enviarDadosParaAPI() {
+  if (dadosColetados.length === 0) {
+    console.warn("Nenhum dado coletado para enviar.");
+    return { success: false, message: "Nenhum dado para enviar" };
+  }
 
-  const promises = urls.map((url) => {
-    return new Promise(async (resolve) => {
-      try {
-        // Abre nova aba
-        const tab = await chrome.tabs.create({ url, active: false });
+  try {
+    // Preparar os dados filtrando entradas sem telefone
+    const dadosValidos = dadosColetados.filter(item => item.phone && item.title);
+    
+    if (dadosValidos.length === 0) {
+      console.warn("Nenhum dado válido para enviar (sem telefone ou título).");
+      return { success: false, message: "Nenhum dado válido para enviar" };
+    }
 
-        // Espera a aba carregar totalmente
-        await new Promise((innerResolve) => {
-          const listener = (tabId, changeInfo) => {
-            if (tabId === tab.id && changeInfo.status === "complete") {
-              chrome.tabs.onUpdated.removeListener(listener);
-              innerResolve();
-            }
-          };
-          chrome.tabs.onUpdated.addListener(listener);
-        });
-        // Injeta content script após a página carregar
-        await chrome.scripting.executeScript({
-          target: { tabId: tab.id },
-          files: ["scraping.js"],
-        });
-       
-        resolve({url:url, tab:tab.id});
-      } catch (error) {
-        console.error(`Error processing URL ${url}:`, error);
-        resolve(null); // ou você pode usar reject(error) se preferir
-      }
+    // Adicionar descrição e cidade a cada item
+    const dadosCompletos = dadosValidos.map(item => ({
+      ...item,
+      descricao: parametrosPesquisa.descricao,
+      cidade: parametrosPesquisa.cidade
+    }));
+
+    console.log("Enviando", dadosCompletos.length, "registros para a API...");
+    
+    // Fazendo a requisição para a API
+    const response = await fetch("http://localhost:3005/empresas", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(dadosCompletos),
     });
-  });
 
-  return Promise.all(promises);
+    if (!response.ok) {
+      throw new Error(`Erro na API: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    console.log("Dados enviados com sucesso:", responseData);
+    
+    // Limpar dados após o envio bem-sucedido
+    dadosColetados = [];
+    
+    return { success: true, data: responseData };
+  } catch (error) {
+    console.error("Erro ao enviar dados para a API:", error);
+    return { success: false, error: error.message };
+  }
 }
-*/
+
 async function getDataInfos(url) {
 
   
@@ -74,6 +94,13 @@ async function getDataInfos(url) {
 // Ouvinte para mensagens do popup
 chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
   if (request.action === "getList") {
+    // Armazenar os parâmetros de pesquisa
+    if (request.descricao && request.cidade) {
+      parametrosPesquisa.descricao = request.descricao;
+      parametrosPesquisa.cidade = request.cidade;
+      console.log("Parâmetros de pesquisa armazenados:", parametrosPesquisa);
+    }
+
     chrome.tabs.create({ url: request.url }, (tab) => {
       console.log(`Tab criada com ID: ${tab.id}`);
 
@@ -164,7 +191,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
         // Fecha a aba, se sender.tab.id existir
         if (sender.tab?.id) {
           console.log('Fechando aba:', sender.tab.id);
-          await chrome.tabs.remove(sender.tab.id);
+          //await chrome.tabs.remove(sender.tab.id);
         } else {
           console.warn('Nenhuma aba associada à mensagem');
         }
@@ -179,6 +206,28 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     return true;
   }
 
+  // Novo listener para enviar dados para a API
+  if (request.action === "enviarDadosAPI") {
+    try {
+      const resultado = await enviarDadosParaAPI();
+      console.log('background resultado', resultado)
+      sendResponse(resultado);
+    } catch (error) {
+      console.error("Erro ao processar envio para API:", error);
+      sendResponse({ success: false, error: error.message });
+    }
+    return true; // Indica que a resposta será assíncrona
+  }
+
+  // Novo listener para verificar a quantidade de dados coletados
+  if (request.action === "verificarDadosColetados") {
+    sendResponse({ 
+      quantidade: dadosColetados.length,
+      dadosValidos: dadosColetados.filter(item => item.phone && item.title).length,
+      parametrosPesquisa: parametrosPesquisa
+    });
+    return true;
+  }
 });
 
 // background.js

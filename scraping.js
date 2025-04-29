@@ -1,26 +1,3 @@
-/*
-function waitForElement(selector, callback) {
-    const element = document.querySelector(selector);
-    if (element) {
-        callback(element);
-        return;
-    }
-
-    const observer = new MutationObserver(() => {
-        const foundElement = document.querySelector(selector);
-        if (foundElement) {
-            observer.disconnect(); // Para de observar quando o elemento é encontrado
-            callback(foundElement);
-        }
-    });
-
-    // Observa mudanças no DOM
-    observer.observe(document.body, {
-        childList: true,  // Observa adição/remoção de filhos
-        subtree: true     // Observa toda a árvore DOM
-    });
-}
-*/
 
 async function sendDados(dados){
    let tabid= await chrome.runtime.sendMessage({
@@ -65,6 +42,7 @@ async function sendDados(dados){
 
 setTimeout(async () => {
     let rs = await fetchCompanyDetails()
+    console.log( 'esse é o objeto rs', rs)
     await sendDados(rs)
 }, 4000);
 

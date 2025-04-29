@@ -80,6 +80,65 @@
         button:hover {
             background-color: #3a7bc8;
         }
+
+        .button-enviar-api {
+            background-color: #4CAF50;
+            margin-top: 2rem;
+        }
+        
+        .button-enviar-api:hover {
+            background-color: #45a049;
+        }
+
+        .status-container {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 4px;
+            background-color: #f0f0f0;
+        }
+
+        .status-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .pesquisa-atual {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #ddd;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
     </style>
 </head>
 <body>
@@ -103,10 +162,43 @@
                 <input type="text" value="goiania-go" id="cidade" name="cidade" placeholder="Digite uma cidade" required>
             </div>
             
-            <button type="submit" id="enviar">Enviar</button>
+            <button type="submit" id="enviar">Iniciar Coleta</button>
+
+            <!-- Status dos dados coletados -->
+            <div class="status-container">
+                <div class="status-title">Status da Coleta:</div>
+                <div class="status-info">
+                    <span>Total de dados coletados:</span>
+                    <span id="total-dados">0</span>
+                </div>
+                <div class="status-info">
+                    <span>Dados válidos (com telefone):</span>
+                    <span id="dados-validos">0</span>
+                </div>
+                
+                <!-- Parâmetros da pesquisa atual -->
+                <div class="pesquisa-atual">
+                    <div class="status-title">Pesquisa Atual:</div>
+                    <div class="status-info">
+                        <span>Descrição:</span>
+                        <span id="descricao-pesquisa">-</span>
+                    </div>
+                    <div class="status-info">
+                        <span>Cidade:</span>
+                        <span id="cidade-pesquisa">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mensagem de alerta -->
+            <div id="alert-message" class="alert hidden"></div>
+            
+            <!-- Botão para enviar dados para API -->
+            <button type="button" id="enviar-api" class="button-enviar-api">Enviar Dados para API</button>
       
     </div>
 
     <script src="./popup.js"></script>
+    <script src="./sidepanel.js"></script>
 </body>
 </html>

@@ -11,7 +11,7 @@
     "48": "./icon/icons8-data-42.png"
   },
     "permissions": ["tabs", "scripting", "activeTab", "storage","sidePanel"],
-    "host_permissions": ["https://www.google.com.br/*"],
+    "host_permissions": ["https://www.google.com.br/*", "http://localhost:3005/*"],
     "background": {
       "service_worker": "background.js",
       "type": "module"
