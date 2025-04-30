@@ -191,7 +191,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
         // Fecha a aba, se sender.tab.id existir
         if (sender.tab?.id) {
           console.log('Fechando aba:', sender.tab.id);
-          //await chrome.tabs.remove(sender.tab.id);
+          await chrome.tabs.remove(sender.tab.id);
         } else {
           console.warn('Nenhuma aba associada à mensagem');
         }

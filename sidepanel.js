@@ -38,8 +38,8 @@ document.addEventListener('DOMContentLoaded', function() {
         chrome.runtime.sendMessage({
             action: 'enviarDadosAPI'
         }, function(response) {
-            console.log('response', response.data.success)
-            if (response.data.success) {
+            console.log('response', response.success)
+            if (response.success) {
                 mostrarAlerta('Dados enviados com sucesso!', 'alert-success');
                 // Atualizar contadores
                 atualizarStatusDados();
