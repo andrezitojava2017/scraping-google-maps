@@ -1,5 +1,7 @@
 let collectedLinks = [];
 let dadosColetados = [];
+let next=true;
+
 // Armazenar os parâmetros de pesquisa
 let parametrosPesquisa = {
   descricao: '',
@@ -84,7 +86,7 @@ async function getDataInfos(url) {
         resolve({url:url, tab:tab.id});
       } catch (error) {
         console.error(`Error processing URL ${url}:`, error);
-        resolve(null); // ou você pode usar reject(error) se preferir
+        reject(error); // ou você pode usar reject(error) se preferir
       }
     });
  
@@ -147,6 +149,28 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
 
     //getDataInfo(collectedLinks)
     for(const el of collectedLinks) {
+      try {
+
+        let interval;
+        
+        await new Promise((resolve)=>{
+          interval = setInterval(() => {
+            if(next) resolve()
+          }, 2000);
+        })
+
+        clearInterval(interval)
+        next=false;
+
+        const rs = await getDataInfos(el) 
+        console.warn("link aberto: ", rs);
+
+        
+
+      } catch (error) {
+        console.warn("link NAO aberto: ", error);
+      }
+/*
       getDataInfos(el)  
       .then((rs) => {
         console.warn("link aberto: ", rs);
@@ -154,7 +178,7 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
       .catch((e) => {
         console.warn("link NAO aberto: ", e);
       });
-
+*/
     }
     
     /*
@@ -182,6 +206,10 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
       */
   }
 
+  if(request.action === 'next'){
+
+  }
+
   if (request.action === "data") {
    
       try {
@@ -192,6 +220,9 @@ chrome.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
         if (sender.tab?.id) {
           console.log('Fechando aba:', sender.tab.id);
           await chrome.tabs.remove(sender.tab.id);
+
+          next=true; // altera next indicando que o loop pode abrir outra pagina
+
         } else {
           console.warn('Nenhuma aba associada à mensagem');
         }
