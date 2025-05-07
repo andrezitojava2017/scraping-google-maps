@@ -19,12 +19,15 @@ btnEnviar.addEventListener("click", (e) => {
   e.preventDefault();
   let search = `${descricao},+${cidade}`
 
+  btnEnviar.textContent='Lendo informações'
+  btnEnviar.classList.add('disabled-btn')
+  btnEnviar.disabled=true;
+
   chrome.runtime.sendMessage({
     action: 'getList',
     url: `https://www.google.com.br/maps/search/${search}/`,
     descricao: descricao,
     cidade: cidade
   });
-  
 });
 
